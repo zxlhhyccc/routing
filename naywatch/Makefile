@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=naywatch
 PKG_VERSION:=1
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=8
 
 PKG_MAINTAINER:=Nick Hainke <vincent@systemli.org>
 PKG_LICENSE:=GPL-2.0-only
@@ -23,7 +23,12 @@ define Package/naywatch
 endef
 
 define Package/naywatch/description
-Reboots or triggers watchdog if no link local neighbor is available.
+Reboots or triggers watchdog if no link-local neighbor is available.
+
+Important:
+Be careful when you do a sysupgrade. Stop naywatch first, and make
+sure procd took control again of the watchdog.
+You can do this using 'ubus call system watchdog'.  Status should be "running".
 endef
 
 define Package/naywatch/conffiles
@@ -39,7 +44,7 @@ define Package/naywatch/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/naywatch.sh $(1)/usr/bin/naywatch
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/naywatch.config $(1)/etc/config/naywatch
+	$(INSTALL_CONF) ./files/naywatch.config $(1)/etc/config/naywatch
 endef
 
 $(eval $(call BuildPackage,naywatch))
